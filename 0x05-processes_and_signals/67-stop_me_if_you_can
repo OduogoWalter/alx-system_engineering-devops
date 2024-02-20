@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# This script stops the 7-highlander process.
+# 67-stop_me_if_you_can script stops the 7-highlander process
 
-# Finding the PID of the 7-highlander process
-pid=$(pgrep 7-highlander)
-
-# Checking if the PID is found
+# Find and kill the 7-highlander process
+pid=$(pgrep -f "7-highlander")
 if [ -n "$pid" ]; then
-    # Sending the SIGTERM signal to terminate the process
-    kill -TERM "$pid"
+    kill -15 "$pid"
+    echo "Killed process 7-highlander with PID $pid"
+else
+    echo "Process 7-highlander not found"
 fi

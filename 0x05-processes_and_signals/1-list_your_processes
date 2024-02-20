@@ -4,4 +4,3 @@
 # Using ps command to display processes with user-oriented format, including all users and those without a TTY
 # Sorting the processes by PID to show hierarchy
 ps -e -o user,pid,%cpu,%mem,vsz,rss,tty,stat,start,time,cmd --forest
-

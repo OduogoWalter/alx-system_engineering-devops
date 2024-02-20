@@ -11,3 +11,4 @@ for pid_dir in /proc/*/; do
         fi
     fi
 done
+

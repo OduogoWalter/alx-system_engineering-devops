@@ -1,5 +1,6 @@
-# install flask from pip3 -v 2.1..
+# Puppet manifest to install Flask version 2.1.0 using pip3
 
-exec { 'puppet-lint':
-  command => '/usr/bin/apt-get -y install flask -v 2.1.0',
+package { 'flask':
+  ensure   => '2.1.0',
+  provider => 'pip3',
 }

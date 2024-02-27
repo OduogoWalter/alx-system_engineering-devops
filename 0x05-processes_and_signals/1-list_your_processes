@@ -1,6 +1,18 @@
 #!/usr/bin/env bash
 # This script displays a list of currently running processes.
 
-# Using ps command to display processes with user-oriented format, including all users and those without a TTY
-# Sorting the processes by PID to show hierarchy
-ps -e -o user,pid,%cpu,%mem,vsz,rss,tty,stat,start,time,cmd --forest
+# Using ps command to list processes with user-oriented format
+# -e: Select all processes
+# -o: User-defined format
+# user: User owning the process
+# pid: Process ID
+# %cpu: CPU utilization
+# %mem: Memory utilization
+# vsz: Virtual memory size in KiB
+# rss: Resident Set Size, the non-swapped physical memory that a task has used in KiB
+# tty: Controlling terminal of the process
+# stat: Process state
+# start: Start time or date of the process
+# time: Cumulative CPU time
+# command: Command with all its arguments
+ps -e -o user,pid,%cpu,%mem,vsz,rss,tty,stat,start,time,command --forest

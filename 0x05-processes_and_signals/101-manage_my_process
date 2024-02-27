@@ -1,35 +1,40 @@
 #!/usr/bin/env bash
-# Bash init script to manage manage_my_process
+# Bash script to manage manage_my_process
 
-# Path to the manage_my_process script
-MANAGE_SCRIPT="/path/to/manage_my_process"
+# Define the PID file path
+PIDFILE="/var/run/my_process.pid"
 
-# Function to start the manage_my_process
+# Function to start manage_my_process
 start_process() {
-    $MANAGE_SCRIPT &
-    echo $! > /var/run/my_process.pid
-    echo "manage_my_process started"
-}
-
-# Function to stop the manage_my_process
-stop_process() {
-    if [ -f "/var/run/my_process.pid" ]; then
-        kill $(cat /var/run/my_process.pid)
-        rm -f /var/run/my_process.pid
-        echo "manage_my_process stopped"
+    if [ -e "$PIDFILE" ]; then
+        echo "manage_my_process is already running."
     else
-        echo "No process to stop"
+        /path/to/manage_my_process &  # Change this to the actual path
+        echo $! > "$PIDFILE"
+        echo "manage_my_process started"
     fi
 }
 
-# Function to restart the manage_my_process
+# Function to stop manage_my_process
+stop_process() {
+    if [ -e "$PIDFILE" ]; then
+        pid=$(cat "$PIDFILE")
+        kill -9 "$pid"
+        rm -f "$PIDFILE"
+        echo "manage_my_process stopped"
+    else
+        echo "manage_my_process is not running."
+    fi
+}
+
+# Function to restart manage_my_process
 restart_process() {
     stop_process
     start_process
     echo "manage_my_process restarted"
 }
 
-# Check for arguments
+# Check for the argument passed
 case "$1" in
     start)
         start_process
@@ -45,3 +50,5 @@ case "$1" in
         exit 1
         ;;
 esac
+
+exit 0

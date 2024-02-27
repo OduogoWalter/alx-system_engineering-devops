@@ -2,4 +2,4 @@
 # This script connects to the server using SSH with a private key
 
 # Connect to the server using SSH with the private key and user ubuntu
-ssh -i ~/.ssh/school ubuntu@john_walter
+ssh -i ~/.ssh/school ubuntu@"$1"

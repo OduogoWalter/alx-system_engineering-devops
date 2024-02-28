@@ -21,6 +21,8 @@ Resources:
 3. https://www.puppet.com/blog
 4. http://puppet-lint.com/
 5. https://github.com/voxpupuli/puppet-mode
+
+
 Requirements:
 General
 All your files will be interpreted on Ubuntu 20.04 LTS

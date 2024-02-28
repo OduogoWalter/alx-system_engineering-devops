@@ -2,7 +2,7 @@
 # This script tells the story of /etc/passwd
 
 # Read each line of the /etc/passwd file and process it
-while IFS=':' read -r username x userid groupid gecos homedir shell; do
+while IFS=':' read -r username _ userid groupid gecos homedir shell; do
     # Extract the password from gecos field
     password=$(echo "$gecos" | cut -d',' -f1)
     # Extract user id info from gecos field

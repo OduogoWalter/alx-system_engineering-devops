@@ -5,3 +5,4 @@
 while IFS=":" read -r username x userid x home _; do
     echo "$username:$userid:$home"
 done < /etc/passwd
+

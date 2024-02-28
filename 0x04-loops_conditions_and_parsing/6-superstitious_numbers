@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# This script displays numbers from 1 to 20 with superstitious messages
+
+# Initialize counter
+count=1
+
+# Use a while loop to iterate from 1 to 20
+while [ $count -le 20 ]
+do
+    # Display the current number
+    echo $count
+
+    # Check if the current number triggers a message
+    case $count in
+        4)
+            echo "bad luck from China"
+            ;;
+        9)
+            echo "bad luck from Japan"
+            ;;
+        17)
+            echo "bad luck from Italy"
+            ;;
+    esac
+
+    # Increment counter
+    ((count++))
+done

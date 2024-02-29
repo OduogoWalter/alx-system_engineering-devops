@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# This script displays listening ports along with the PID and name of the program.
+
+# Use netstat to display listening ports
+netstat -tuln | awk '$NF ~ /^[0-9]+\/.*/ {print $0}'

@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Bash script to install and configure Nginx web server
+
+# Update package lists and install nginx
+apt-get update -y
+apt-get install -y nginx
+
+# Create a default server block configuration file with "Hello World!" response
+echo "server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+    index index.html index.htm index.nginx-debian.html;
+
+    server_name _;
+
+    location / {
+        add_header Content-Type text/plain;
+        echo 'Hello World!';
+    }
+}" > /etc/nginx/sites-available/default
+
+# Restart nginx
+nginx -s reload

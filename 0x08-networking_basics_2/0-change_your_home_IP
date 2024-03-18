@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
-# This script reverts the changes made to localhost IP address on an Ubuntu server
-
-# Revert localhost IP
-sudo sed -i 's/127\.0\.0\.2/127\.0\.0\.1/g' /etc/hosts
-
-# Revert facebook.com IP if it was changed
-sudo sed -i 's/^.*facebook\.com .*$/# Existing entry reverted/g' /etc/hosts
+# it changes the following IPs
+cp /etc/hosts ~/hosts.bck
+sed -i s/127.0.0.1/127.0.0.2/ ~/hosts.bck
+echo -e '8.8.8.8\tfacebook.com' >> ~/hosts.bck
+cp -f ~/hosts.bck /etc/hosts
 

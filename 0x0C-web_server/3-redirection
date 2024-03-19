@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Script to configure Nginx redirection
+
+# Define the redirection configuration
+REDIRECTION_CONFIG=$(cat << 'EOF'
+location /redirect_me {
+    return 301 https://www.example.com/new_page;
+}
+EOF
+)
+
+# Use sed to replace a line with the redirection configuration
+sed -i "/listen 80;/a $REDIRECTION_CONFIG" /etc/nginx/sites-enabled/default
+
+# Restart Nginx to apply the changes
+systemctl restart nginx
+

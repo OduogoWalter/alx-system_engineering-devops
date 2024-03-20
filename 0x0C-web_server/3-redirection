@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
-# Bash script to Install nginx web server
+# Bash script to configure nginx redirection
 
 sudo apt-get update -y
 sudo apt-get install nginx -y
+
 echo "Hello World!" | sudo tee /var/www/html/index.nginx-debian.html
-sudo service nginx start
-rdt="location /redirect_me {\\nrewrite ^(.*)$ https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;\\n}"
-sudo sed -i "30i $rdt" /etc/nginx/sites-available/default
+
+# Define the redirection configuration
+rdt="location /redirect_me {\\n\treturn 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;\\n}"
+
+# Use sed to replace a line with multiple lines
+sudo sed -i "/^.*listen \[::\]:80 default_server;$/a $rdt" /etc/nginx/sites-available/default
+
 sudo service nginx restart
 

@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Fix Apache configuration to return a page containing "Hello Holberton"
+
+# Start Docker container
+docker run -p 8080:80 -d -it holbertonschool/265-0
+
+# Connect to the container
+docker exec -it $(docker ps -q) /bin/bash
+
+# Navigate to Apache's configuration directory and edit the default configuration file
+cd /etc/apache2/sites-available/
+sed -i 's/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/html\n\n\tRewriteEngine on\n\tRewriteRule ^\/?$ \/var\/www\/html\/index.html\n/' 000-default.conf
+
+# Create index.html file with content "Hello Holberton"
+echo "Hello Holberton" > /var/www/html/index.html
+
+# Restart Apache
+service apache2 restart
+

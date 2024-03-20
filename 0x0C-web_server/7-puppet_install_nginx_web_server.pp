@@ -1,0 +1,5 @@
+# SSH client configuration
+exec { 
+	
+}
+

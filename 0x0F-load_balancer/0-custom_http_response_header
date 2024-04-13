@@ -1,18 +1,15 @@
 #!/usr/bin/env bash
-# This script configures Nginx to include a custom HTTP header on Ubuntu
+# This script configures Nginx to include a custom HTTP response header on a new Ubuntu machine
 
-# Install Nginx if not already installed
-sudo apt-get update
-sudo apt-get install -y nginx
+# Update and install Nginx
+sudo apt update
+sudo apt install -y nginx
 
-# Define the custom header value
-header_value=$(hostname)
+# Edit Nginx configuration file to add custom header
+sudo sed -i '/server {/a \        add_header X-Served-By $hostname;' /etc/nginx/sites-available/default
 
-# Add the custom header configuration to Nginx
-sudo bash -c "cat <<EOF > /etc/nginx/conf.d/custom_headers.conf
-server_tokens off;
-add_header X-Served-By $header_value;
-EOF"
+# Test Nginx configuration
+sudo nginx -t
 
-# Restart Nginx to apply the changes
-sudo systemctl restart nginx
+# Reload Nginx to apply changes
+sudo systemctl reload nginx

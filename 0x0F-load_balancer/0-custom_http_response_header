@@ -1,5 +1,52 @@
 #!/usr/bin/env bash
+<<<<<<< HEAD
 # This script configures Nginx to add a custom HTTP header
+=======
+<<<<<<< HEAD
+
+# Bash script to configure Nginx and transfer necessary files from web-01 to web-02
+
+# Function to display usage message
+usage() {
+  echo "Usage: $0 SSH_PRIVATE_KEY"
+  echo "Example: $0 /path/to/private_key"
+  exit 1
+}
+
+# Check if correct number of arguments are provided
+if [ "$#" -ne 1 ]; then
+  usage
+fi
+
+# Assign arguments to variables
+SSH_PRIVATE_KEY="$1"
+WEB_01_IP="54.87.238.72"
+WEB_02_IP="100.26.56.201"
+USERNAME="ubuntu"
+NGINX_CONF="/etc/nginx/nginx.conf"
+
+# Transfer nginx configuration from web-01 to web-02
+echo "Transferring nginx configuration file from web-01 to web-02..."
+./0-transfer_file /etc/nginx/nginx.conf "$WEB_01_IP" "$USERNAME" "$SSH_PRIVATE_KEY" >/dev/null 2>&1
+
+# Update nginx configuration on web-02 to include custom header
+echo "Updating nginx configuration on web-02..."
+scp -o StrictHostKeyChecking=no -i "$SSH_PRIVATE_KEY" ubuntu@"$WEB_02_IP":~/nginx.conf /tmp/nginx.conf
+sed -i 's/# server_tokens off;/server_tokens off;\n\tadd_header X-Served-By $hostname;/' /tmp/nginx.conf
+
+# Transfer modified nginx configuration back to web-02
+echo "Transferring modified nginx configuration file to web-02..."
+scp -o StrictHostKeyChecking=no -i "$SSH_PRIVATE_KEY" /tmp/nginx.conf ubuntu@"$WEB_02_IP":~/nginx.conf >/dev/null 2>&1
+
+# Restart Nginx on web-02 to apply changes
+echo "Restarting Nginx on web-02..."
+ssh -o StrictHostKeyChecking=no -i "$SSH_PRIVATE_KEY" ubuntu@"$WEB_02_IP" 'sudo systemctl restart nginx' >/dev/null 2>&1
+
+echo "Configuration completed successfully."
+=======
+# duplicate web-01 to web-02
+# these scripts are an upgrade from the web-server scripts...
+>>>>>>> 5897316ca533f139d541f79bd3b6041216f18074
 
 # Install Nginx if not already installed
 apt-get update
@@ -8,5 +55,84 @@ apt-get install -y nginx
 # Configure Nginx to add custom header
 echo "add_header X-Served-By \${HOSTNAME};" >> /etc/nginx/sites-available/default
 
+<<<<<<< HEAD
 # Reload Nginx to apply changes
 service nginx reload
+=======
+function install() {
+    command -v "$1" &> /dev/null
+
+    #shellcheck disable=SC2181
+    if [ $? -ne 0 ]; then
+        echo -e "    Installing: $1$\n"
+        sudo apt-get update -y -qq && \
+            sudo apt-get install -y "$1" -qq
+        echo -e "\n"
+    else
+        echo -e "    ${1} is already installed.\n"
+    fi
+}
+
+install nginx #install nginx
+
+echo -e "\nSetting up some minor stuff.\n"
+
+# allowing nginx on firewall
+sudo ufw allow 'Nginx HTTP'
+
+# Give the user ownership to website files for easy editing
+if [ -d "/var/www" ]; then
+    sudo chown -R "$USER":"$USER" /var/www
+    sudo chmod -R 755 /var/www
+else
+    sudo mkdir -p /var/www
+    sudo chown -R "$USER":"$USER" /var/www
+    sudo chmod -R 755 /var/www
+fi
+
+# create directories if not present
+for dir in /var/www/{html,error}; do
+    if ! [ -d "$dir" ]; then
+        mkdir -p "$dir"
+    fi
+done
+
+# creating new index
+echo "Hello World!" > /var/www/html/index.html
+
+# create new error page
+echo "Ceci n'est pas une page" > /var/www/html/error_404.html
+
+# backup default server config file
+sudo cp /etc/nginx/sites-enabled/default nginx-sites-enabled_default.backup
+
+server_config=\
+"server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+        root /var/www/html;
+        index index.html index.htm index.nginx-debian.html
+        server_name_;
+        add_header X-Served-By $(hostname -s);
+        location / {
+            try_files \$uri \$uri/ =404;
+        }
+        if (\$request_filename ~ redirect_me){
+            rewrite ^ https://th3-gr00t.tk/ permanent;
+        }
+        error_page 404 /error_404.html;
+        location = /error_404.html {
+            internal;
+        }
+}"
+
+#shellcheck disable=SC2154
+echo "$server_config" | sudo dd status=none of=/etc/nginx/sites-enabled/default
+
+if [ "$(pgrep -c nginx)" -le 0 ]; then
+    sudo service nginx start
+else
+    sudo service nginx restart
+fi
+>>>>>>> 0662dff0300655d49a7862415875c50a9c327966
+>>>>>>> 5897316ca533f139d541f79bd3b6041216f18074

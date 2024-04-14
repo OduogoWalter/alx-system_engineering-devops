@@ -1,12 +1,67 @@
 #!/usr/bin/env bash
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+# This script configures Nginx to add a custom HTTP header
+=======
+<<<<<<< HEAD
+
+# Bash script to configure Nginx and transfer necessary files from web-01 to web-02
+
+# Function to display usage message
+usage() {
+  echo "Usage: $0 SSH_PRIVATE_KEY"
+  echo "Example: $0 /path/to/private_key"
+  exit 1
+}
+
+# Check if correct number of arguments are provided
+if [ "$#" -ne 1 ]; then
+  usage
+fi
+
+# Assign arguments to variables
+SSH_PRIVATE_KEY="$1"
+WEB_01_IP="54.87.238.72"
+WEB_02_IP="100.26.56.201"
+USERNAME="ubuntu"
+NGINX_CONF="/etc/nginx/nginx.conf"
+
+# Transfer nginx configuration from web-01 to web-02
+echo "Transferring nginx configuration file from web-01 to web-02..."
+./0-transfer_file /etc/nginx/nginx.conf "$WEB_01_IP" "$USERNAME" "$SSH_PRIVATE_KEY" >/dev/null 2>&1
+
+# Update nginx configuration on web-02 to include custom header
+echo "Updating nginx configuration on web-02..."
+scp -o StrictHostKeyChecking=no -i "$SSH_PRIVATE_KEY" ubuntu@"$WEB_02_IP":~/nginx.conf /tmp/nginx.conf
+sed -i 's/# server_tokens off;/server_tokens off;\n\tadd_header X-Served-By $hostname;/' /tmp/nginx.conf
+
+# Transfer modified nginx configuration back to web-02
+echo "Transferring modified nginx configuration file to web-02..."
+scp -o StrictHostKeyChecking=no -i "$SSH_PRIVATE_KEY" /tmp/nginx.conf ubuntu@"$WEB_02_IP":~/nginx.conf >/dev/null 2>&1
+
+# Restart Nginx on web-02 to apply changes
+echo "Restarting Nginx on web-02..."
+ssh -o StrictHostKeyChecking=no -i "$SSH_PRIVATE_KEY" ubuntu@"$WEB_02_IP" 'sudo systemctl restart nginx' >/dev/null 2>&1
+
+echo "Configuration completed successfully."
+=======
+>>>>>>> b82a5d2e16e4c300c7a4f6cfcccb4801571c2f71
 # duplicate web-01 to web-02
 # these scripts are an upgrade from the web-server scripts...
+>>>>>>> 5897316ca533f139d541f79bd3b6041216f18074
 
-# uncomment to see the script run in action
-#set -x
+# Install Nginx if not already installed
+apt-get update
+apt-get install -y nginx
 
-echo -e "Updating and doing some minor checks...\n"
+# Configure Nginx to add custom header
+echo "add_header X-Served-By \${HOSTNAME};" >> /etc/nginx/sites-available/default
 
+<<<<<<< HEAD
+# Reload Nginx to apply changes
+service nginx reload
+=======
 function install() {
 	command -v "$1" &> /dev/null
 
@@ -82,3 +137,8 @@ if [ "$(pgrep -c nginx)" -le 0 ]; then
 else
 	sudo service nginx restart
 fi
+<<<<<<< HEAD
+=======
+>>>>>>> 0662dff0300655d49a7862415875c50a9c327966
+>>>>>>> 5897316ca533f139d541f79bd3b6041216f18074
+>>>>>>> b82a5d2e16e4c300c7a4f6cfcccb4801571c2f71

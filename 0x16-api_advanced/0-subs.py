@@ -39,3 +39,4 @@ def number_of_subscribers(subreddit):
         # Handle other error cases
         print(f"Error: {response.status_code}")
         return 0
+

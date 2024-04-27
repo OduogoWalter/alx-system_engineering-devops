@@ -9,23 +9,24 @@ import requests
 def number_of_subscribers(subreddit):
     """
     Retrieves the number of subscribers for a given subreddit
-    
+
     Args:
         subreddit (str): The name of the subreddit
-    
+
     Returns:
-        int: The number of subscribers for the subreddit, or 0 if the subreddit is invalid
+        int: The number of subscribers for the subreddit,
+        or 0 if the subreddit is invalid
     """
     # Set a custom User-Agent to avoid Too Many Requests error
     headers = {'User-Agent': 'MyBot/1.0'}
-    
+
     # Reddit API endpoint for retrieving subreddit information
     url = f'https://www.reddit.com/r/{subreddit}/about.json'
-    
+
     # Send GET request to the API endpoint
     try:
         response = requests.get(url, headers=headers, allow_redirects=False)
-        
+
         # Check if the request was successful
         if response.status_code == 200:
             # Parse JSON response

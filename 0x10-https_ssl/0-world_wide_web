@@ -1,16 +1,29 @@
 #!/usr/bin/env bash
-# Takes 'domain' and 'subdomain' parameters and displays information for the specified subdomain
+# This script displays information about subdomains for a given domain
 
-print_info () {
-	script=$(dig "$2"."$1" | grep -A1 'ANSWER SECTION:' | tr '\t' '\n' | tail -2 | tr '\n' ' ')
-	echo "$2 $script" | awk '{print "The subdomain " $1 " is a " $2 " record and points to " $3}'
+# Function to display DNS record information for a subdomain
+get_dns_info() {
+    local domain="$1"
+    local subdomain="$2"
+    local full_domain="${subdomain}.${domain}"
+    # Use dig to get the IP address associated with the subdomain
+    local dns_info
+    dns_info=$(dig +short "${full_domain}" A)
+    if [ -n "${dns_info}" ]; then
+        echo "The subdomain ${subdomain} is a A record and points to ${dns_info}"
+    fi
 }
 
-if [ "$#" -eq 2 ]; then
-	print_info "$1" "$2"
+# Main execution
+if [ "$#" -eq 1 ]; then
+    # Display info for default subdomains when only domain is provided
+    get_dns_info "$1" "www"
+    get_dns_info "$1" "lb-01"
+    get_dns_info "$1" "web-01"
+    get_dns_info "$1" "web-02"
+elif [ "$#" -eq 2 ]; then
+    # Display info for the specified subdomain
+    get_dns_info "$1" "$2"
 else
-	subdomains=("www" "lb-01" "web-01" "web-02")
-	for subdomain in "${subdomains[@]}"; do
-		print_info "$1" "$subdomain"
-	done
+    echo "Usage: $0 domain [subdomain]"
 fi

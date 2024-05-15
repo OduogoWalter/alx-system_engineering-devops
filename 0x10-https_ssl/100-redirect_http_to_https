@@ -17,7 +17,7 @@ defaults
 
 # Frontend configuration for HTTPS
 frontend www-https
-    bind *:443 ssl crt /etc/letsencrypt/live/www.yourdomain.com/fullchain.pem key /etc/letsencrypt/live/www.yourdomain.com/privkey.pem
+    bind *:443 ssl crt /etc/letsencrypt/live/www.waltersolutions.tech/fullchain.pem key /etc/letsencrypt/live/www.waltersolutions.tech/privkey.pem
     mode http
     default_backend web-servers
 

@@ -5,7 +5,8 @@ function display_info {
     local domain=$1
     local subdomain=$2
     local record_type="A"
-    local destination=$(dig +short "$subdomain.$domain")
+    local destination
+    destination=$(dig +short "$subdomain.$domain")
 
     echo "The subdomain $subdomain is a $record_type record and points to $destination"
 }
@@ -18,9 +19,9 @@ fi
 domain=$1
 
 if [[ -n $2 ]]; then
-    display_info $domain $2
+    display_info "$domain" "$2"
 else
-    for sub in "www" "54.80.212.49" "54.87.238.72" "35.153.52.13"; do
-        display_info $domain $sub
+    for sub in "www" "lb-01" "web-01" "web-02"; do
+        display_info "$domain" "$sub"
     done
 fi

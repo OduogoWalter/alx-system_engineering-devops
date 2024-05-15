@@ -35,7 +35,7 @@ The first line of all your Bash scripts should be exactly #!/usr/bin/env bash
 The second line of all your Bash scripts should be a comment explaining what is the script doing
 
 SEVERS:
-Name |	Username	| IP |	State	
+Name          |	Username| IP            | State	
 110882-web-01 |	ubuntu	| 54.87.238.72	| running	
-110882-web-02 |	ubuntu |	35.153.52.13	|running	
-110882-lb-01  |	ubuntu	|54.80.212.49	 |running
+110882-web-02 |	ubuntu  | 35.153.52.13	| running	
+110882-lb-01  |	ubuntu	| 54.80.212.49	| running

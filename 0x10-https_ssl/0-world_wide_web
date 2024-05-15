@@ -2,25 +2,15 @@
 # Takes 'domain' and 'subdomain' parameters and displays information for the specified subdomain
 
 print_info () {
-    # Perform DNS lookup and process the output
-    script=$(dig "$2.$1" | grep -A1 'ANSWER SECTION:' | tr '\t' '\n' | tail -2 | tr '\n' ' ')
-
-    # Check if the 'script' variable is empty, indicating no DNS resolution
-    if [[ -z "$script" ]]; then
-        echo "Error: Could not resolve $2.$1"
-        return 1
-    fi
-
-    # Print the formatted DNS information
-    echo "$2 $script" | awk '{print "The subdomain " $1 " is a " $2 " record and points to " $3}'
+	script=$(dig "$2"."$1" | grep -A1 'ANSWER SECTION:' | tr '\t' '\n' | tail -2 | tr '\n' ' ')
+	echo "$2 $script" | awk '{print "The subdomain " $1 " is a " $2 " record and points to " $3}'
 }
 
-# Check if the correct number of arguments is provided
-if [[ "$#" -eq 2 ]]; then
-    print_info "$1" "$2"
+if [ "$#" -eq 2 ]; then
+	print_info "$1" "$2"
 else
-    subdomains=("www" "lb-01" "web-01" "web-02")
-    for subdomain in "${subdomains[@]}"; do
-        print_info "$1" "$subdomain"
-    done
+	subdomains=("www" "lb-01" "web-01" "web-02")
+	for subdomain in "${subdomains[@]}"; do
+		print_info "$1" "$subdomain"
+	done
 fi

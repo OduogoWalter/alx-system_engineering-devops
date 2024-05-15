@@ -1,27 +1,26 @@
 #!/usr/bin/env bash
-# Script to display DNS information about specified subdomains
+# Takes 'domain' and 'subdomain' parameters and displays information for the specified subdomain
 
-function display_info {
-    local domain=$1
-    local subdomain=$2
-    local record_type="A"
-    local destination
-    destination=$(dig +short "$subdomain.$domain")
+print_info () {
+    # Perform DNS lookup and process the output
+    script=$(dig "$2.$1" | grep -A1 'ANSWER SECTION:' | tr '\t' '\n' | tail -2 | tr '\n' ' ')
 
-    echo "The subdomain $subdomain is a $record_type record and points to $destination"
+    # Check if the 'script' variable is empty, indicating no DNS resolution
+    if [[ -z "$script" ]]; then
+        echo "Error: Could not resolve $2.$1"
+        return 1
+    fi
+
+    # Print the formatted DNS information
+    echo "$2 $script" | awk '{print "The subdomain " $1 " is a " $2 " record and points to " $3}'
 }
 
-if [[ -z $1 ]]; then
-    echo "Usage: $0 domain [subdomain]"
-    exit 1
-fi
-
-domain=$1
-
-if [[ -n $2 ]]; then
-    display_info "$domain" "$2"
+# Check if the correct number of arguments is provided
+if [[ "$#" -eq 2 ]]; then
+    print_info "$1" "$2"
 else
-    for sub in "www" "lb-01" "web-01" "web-02"; do
-        display_info "$domain" "$sub"
+    subdomains=("www" "lb-01" "web-01" "web-02")
+    for subdomain in "${subdomains[@]}"; do
+        print_info "$1" "$subdomain"
     done
 fi

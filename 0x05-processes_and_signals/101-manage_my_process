@@ -1,18 +1,21 @@
 #!/bin/bash
 
+# PID_FILE is the path where the process ID will be stored
 PID_FILE=/var/run/my_process.pid
-PROCESS_FILE=/tmp/my_process
+
+# Uncomment the next line if you need to use PROCESS_FILE
+# PROCESS_FILE=/tmp/my_process
 
 start_process() {
     bash manage_my_process &
-    echo $! > $PID_FILE
+    echo $! > "$PID_FILE"
     echo "manage_my_process started"
 }
 
 stop_process() {
-    if [ -f $PID_FILE ]; then
-        kill $(cat $PID_FILE)
-        rm -f $PID_FILE
+    if [ -f "$PID_FILE" ]; then
+        kill "$(cat "$PID_FILE")"
+        rm -f "$PID_FILE"
         echo "manage_my_process stopped"
     fi
 }

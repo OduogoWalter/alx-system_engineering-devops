@@ -1,49 +1,20 @@
 #!/usr/bin/env bash
-# This script creates a PID file, displays "To infinity and beyond" indefinitely,
-# handles signals, and deletes the PID file upon termination.
+# This script Creates the file /var/run/myscript.pid containing its PID
+# Displays To infinity and beyond indefinitely
+# Displays I hate the kill command when receiving a SIGTERM signal
+# Displays Y U no love me?! when receiving a SIGINT signal
+# Deletes the file /var/run/myscript.pid and terminates itself when
+# receiving a SIGQUIT or SIGTERM signal
 
-# Define the PID file path
-PIDFILE="/var/run/myscript.pid"
+file=/var/run/myscript.pid
+echo $$ > "$file"
 
-# Function to handle SIGTERM signal
-sigterm_handler() {
-    echo "I hate the kill command"
-    cleanup
-}
+while true
+do
+	echo "To infinity and beyond"
+	sleep 2
 
-# Function to handle SIGINT signal
-sigint_handler() {
-    echo "Y U no love me?!"
-}
-
-# Function to handle SIGQUIT signal
-sigquit_handler() {
-    echo "Y U no love me?!"
-    cleanup
-}
-
-# Function to clean up and delete the PID file
-cleanup() {
-    rm -f "$PIDFILE"
-    exit 0
-}
-
-# Trap signals and call respective handler functions
-trap 'sigterm_handler' SIGTERM
-trap 'sigint_handler' SIGINT
-trap 'sigquit_handler' SIGQUIT
-
-# Check if the PID file already exists
-if [ -e "$PIDFILE" ]; then
-    echo "PID file already exists. Exiting."
-    exit 1
-fi
-
-# Get the PID of the current process and write it to the PID file
-echo "$$" > "$PIDFILE"
-
-# Display "To infinity and beyond" indefinitely
-while true; do
-    echo "To infinity and beyond"
-    sleep 1
+	trap 'echo "Y U no love me?!"' SIGINT
+	trap 'rm $file; exit' SIGQUIT
+	trap 'echo I hate the kill command; rm $file; exit' SIGTERM
 done

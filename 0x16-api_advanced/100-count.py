@@ -1,72 +1,50 @@
 #!/usr/bin/python3
-"""
-100-count: Recursively retrieves the titles of all hot articles for a given
-subreddit and counts occurrences of given keywords
-"""
+""" Module for a function that queries the Reddit API recursively."""
+
 
 import requests
 
-def count_words(subreddit, word_list, after=None, count_dict={}):
+
+def count_words(subreddit, word_list, after='', word_dict={}):
+    """ A function that queries the Reddit API parses the title of
+    all hot articles, and prints a sorted count of given keywords
+    (case-insensitive, delimited by spaces.
+    Javascript should count as javascript, but java should not).
+    If no posts match or the subreddit is invalid, it prints nothing.
     """
-    Recursively retrieves the titles of all hot articles for a given subreddit
-    and counts occurrences of given keywords
 
-    Args:
-        subreddit (str): The name of the subreddit
-        word_list (list): List of keywords to count occurrences of
-        after (str): Identifier for the last post in the current page (default
-                     is None)
-        count_dict (dict): Dictionary to store counts of keywords (default is
-                           empty)
+    if not word_dict:
+        for word in word_list:
+            if word.lower() not in word_dict:
+                word_dict[word.lower()] = 0
 
-    Returns:
-        None
-    """
-    # Set a custom User-Agent to avoid Too Many Requests error
-    headers = {'User-Agent': 'MyBot/1.0'}
+    if after is None:
+        wordict = sorted(word_dict.items(), key=lambda x: (-x[1], x[0]))
+        for word in wordict:
+            if word[1]:
+                print('{}: {}'.format(word[0], word[1]))
+        return None
 
-    # Reddit API endpoint for retrieving hot posts in a subreddit
-    url = f'https://www.reddit.com/r/{subreddit}/hot.json'
+    url = 'https://www.reddit.com/r/{}/hot/.json'.format(subreddit)
+    header = {'user-agent': 'redquery'}
+    parameters = {'limit': 100, 'after': after}
+    response = requests.get(url, headers=header, params=parameters,
+                            allow_redirects=False)
 
-    # Parameters for pagination
-    params = {'after': after} if after else {}
+    if response.status_code != 200:
+        return None
 
-    # Send GET request to the API endpoint
     try:
-        response = requests.get(url, headers=headers, params=params)
+        hot = response.json()['data']['children']
+        aft = response.json()['data']['after']
+        for post in hot:
+            title = post['data']['title']
+            lower = [word.lower() for word in title.split(' ')]
 
-        # Check if the request was successful
-        if response.status_code == 200:
-            # Parse JSON response
-            data = response.json()
-            # Extract titles of hot posts
-            posts = data['data']['children']
-            for post in posts:
-                title = post['data']['title']
-                # Split title into words and count occurrences of keywords
-                for word in title.split():
-                    word_lower = word.lower().rstrip('.,!?')
-                    if word_lower in word_list:
-                        count_dict[word_lower] = count_dict.get(word_lower, 0) + 1
-            # Check if there are more pages of hot posts
-            after = data['data']['after']
-            if after:
-                return count_words(subreddit, word_list, after=after,
-                                   count_dict=count_dict)
-            else:
-                # Print sorted count of keywords
-                sorted_counts = sorted(count_dict.items(),
-                                       key=lambda x: (-x[1], x[0]))
-                for word, count in sorted_counts:
-                    print(f"{word}: {count}")
-        elif response.status_code == 404:
-            # Subreddit not found, print nothing
-            return
-        else:
-            # Handle other error cases
-            print(f"Error: {response.status_code}")
-            return
-    except requests.exceptions.RequestException as e:
-        # Handle request exceptions
-        print("Error making request:", e)
-        return
+            for word in word_dict.keys():
+                word_dict[word] += lower.count(word)
+
+    except Exception:
+        return None
+
+    count_words(subreddit, word_list, aft, word_dict)

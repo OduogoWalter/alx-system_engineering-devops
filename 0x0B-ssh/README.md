@@ -11,7 +11,6 @@ You can find your server information, including the IP address and username requ
 **Note:** The server runs on an Ubuntu 20.04 LTS environment.
 
 ## Resources
-To help you understand and complete this project, the following resources are recommended:
 
 - [Server (Computing) - Wikipedia](https://en.wikipedia.org/wiki/Server_%28computing%29#Hardware_requirement)
 - [SSH Essentials: Working with SSH Servers, Clients, and Keys - DigitalOcean](https://www.digitalocean.com/community/tutorials/ssh-essentials-working-with-ssh-servers-clients-and-keys)

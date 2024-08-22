@@ -1,1 +1,9 @@
-school.pub
+# Ignore private SSH keys
+school
+
+# Ignore authorized keys file
+authorized_keys
+
+# Ignore temporary files
+*.tmp
+*.bak

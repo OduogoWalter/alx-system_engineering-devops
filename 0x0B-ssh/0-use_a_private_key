@@ -2,5 +2,5 @@
 # This script connects to the server using SSH with a private key
 
 # Connect to the server using SSH with the private key
-ssh -i ~/.ssh/school ubuntu@54.87.238.72
+ssh -i ~/.ssh/school ubuntu@18.210.14.188
 
